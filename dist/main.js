@@ -404,6 +404,7 @@ let $8c8737df5845fd96$var$Message;
     Message["PEER_CONNECTION_FAILED"] = "peer-connection-failed";
     Message["PEER_CONNECTION_CONNECTED"] = "peer-connection-connected";
     Message["INITIAL_CONNECTION_FAILED"] = "initial-connection-failed";
+    Message["RECONNECTION_FAILED"] = "reconnection-failed";
     Message["CONNECT_ERROR"] = "connect-error";
     Message["PLAYER_MUTED"] = "player-muted";
     Message["PLAYER_UNMUTED"] = "player-unmuted";
@@ -412,18 +413,17 @@ const $8c8737df5845fd96$var$MediaConstraintsDefaults = {
     audioOnly: false,
     videoOnly: false
 };
-const $8c8737df5845fd96$var$RECONNECT_ATTEMPTS = 2;
+const $8c8737df5845fd96$var$RECONNECT_ATTEMPTS = 5; // number of times to attempt reconnecting before giving up and emitting a reconnection failed event, can be configured with WebRTCPlayerOptions.reconnectAttemptsLeft
+const $8c8737df5845fd96$var$MEDIA_TIMEOUT_THRESHOLD = 15000; //15 seconds without media is considered a timeout, can be configured with WebRTCPlayerOptions.timeoutThreshold
 class $8c8737df5845fd96$export$f6039712bf1ca949 extends (0, $a1w4g$events.EventEmitter) {
     peer = {};
     adapterFactory = undefined;
     channelUrl = {};
     authKey = undefined;
-    reconnectAttemptsLeft = $8c8737df5845fd96$var$RECONNECT_ATTEMPTS;
     adapter = {};
     statsTypeFilter = undefined;
     msStatsInterval = 5000;
     mediaTimeoutOccured = false;
-    mediaTimeoutThreshold = 30000;
     timeoutThresholdCounter = 0;
     bytesReceived = 0;
     constructor(opts){
@@ -432,11 +432,12 @@ class $8c8737df5845fd96$export$f6039712bf1ca949 extends (0, $a1w4g$events.EventE
             ...$8c8737df5845fd96$var$MediaConstraintsDefaults,
             ...opts.mediaConstraints
         };
+        this.reconnectAttemptsLeft = opts.reconnectAttemptsLeft ?? $8c8737df5845fd96$var$RECONNECT_ATTEMPTS;
         this.videoElement = opts.video;
         this.adapterType = opts.type;
         this.adapterFactory = opts.adapterFactory;
         this.statsTypeFilter = opts.statsTypeFilter;
-        this.mediaTimeoutThreshold = opts.timeoutThreshold ?? this.mediaTimeoutThreshold;
+        this.mediaTimeoutThreshold = opts.timeoutThreshold ?? $8c8737df5845fd96$var$MEDIA_TIMEOUT_THRESHOLD;
         this.iceServers = [
             {
                 urls: "stun:stun.l.google.com:19302"
@@ -478,6 +479,7 @@ class $8c8737df5845fd96$export$f6039712bf1ca949 extends (0, $a1w4g$events.EventE
             this.emit($8c8737df5845fd96$var$Message.PEER_CONNECTION_FAILED);
             this.peer && this.peer.close();
             if (this.reconnectAttemptsLeft <= 0) {
+                this.emit($8c8737df5845fd96$var$Message.RECONNECTION_FAILED);
                 this.error("Connection failed, reconnecting failed");
                 return;
             }

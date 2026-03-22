@@ -23,6 +23,7 @@ interface WebRTCPlayerOptions {
     adapterFactory?: AdapterFactoryFunction;
     iceServers?: RTCIceServer[];
     debug?: boolean;
+    reconnectAttemptsLeft?: number;
     vmapUrl?: string;
     statsTypeFilter?: string;
     detectTimeout?: boolean;
