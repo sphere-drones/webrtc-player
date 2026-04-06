@@ -56,6 +56,7 @@ export class WebRTCPlayer extends EventEmitter {
   private debug: boolean;
   private channelUrl: URL = <URL>{};
   private authKey?: string = undefined;
+  private configuredReconnectAttemptsLeft: number;
   private reconnectAttemptsLeft: number;
   private csaiManager?: CSAIManager;
   private adapter: Adapter = <Adapter>{};
@@ -74,8 +75,9 @@ export class WebRTCPlayer extends EventEmitter {
       ...MediaConstraintsDefaults,
       ...opts.mediaConstraints
     };
-    this.reconnectAttemptsLeft =
+    this.configuredReconnectAttemptsLeft =
       opts.reconnectAttemptsLeft ?? RECONNECT_ATTEMPTS;
+    this.reconnectAttemptsLeft = this.configuredReconnectAttemptsLeft;
     this.videoElement = opts.video;
     this.adapterType = opts.type;
     this.adapterFactory = opts.adapterFactory;
@@ -142,12 +144,12 @@ export class WebRTCPlayer extends EventEmitter {
       this.log(
         `Connection failed, recreating peer connection, attempts left ${this.reconnectAttemptsLeft}`
       );
-      await this.connect();
       this.reconnectAttemptsLeft--;
+      await this.connect();
     } else if (this.peer.connectionState === 'connected') {
       this.log('Connected');
       this.emit(Message.PEER_CONNECTION_CONNECTED);
-      this.reconnectAttemptsLeft = RECONNECT_ATTEMPTS;
+      this.reconnectAttemptsLeft = this.configuredReconnectAttemptsLeft;
     }
   }
 
