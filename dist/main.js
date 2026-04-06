@@ -432,7 +432,8 @@ class $8c8737df5845fd96$export$f6039712bf1ca949 extends (0, $a1w4g$events.EventE
             ...$8c8737df5845fd96$var$MediaConstraintsDefaults,
             ...opts.mediaConstraints
         };
-        this.reconnectAttemptsLeft = opts.reconnectAttemptsLeft ?? $8c8737df5845fd96$var$RECONNECT_ATTEMPTS;
+        this.configuredReconnectAttemptsLeft = opts.reconnectAttemptsLeft ?? $8c8737df5845fd96$var$RECONNECT_ATTEMPTS;
+        this.reconnectAttemptsLeft = this.configuredReconnectAttemptsLeft;
         this.videoElement = opts.video;
         this.adapterType = opts.type;
         this.adapterFactory = opts.adapterFactory;
@@ -489,7 +490,7 @@ class $8c8737df5845fd96$export$f6039712bf1ca949 extends (0, $a1w4g$events.EventE
         } else if (this.peer.connectionState === "connected") {
             this.log("Connected");
             this.emit($8c8737df5845fd96$var$Message.PEER_CONNECTION_CONNECTED);
-            this.reconnectAttemptsLeft = $8c8737df5845fd96$var$RECONNECT_ATTEMPTS;
+            this.reconnectAttemptsLeft = this.configuredReconnectAttemptsLeft;
         }
     }
     onErrorHandler(error) {
