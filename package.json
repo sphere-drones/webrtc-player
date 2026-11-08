@@ -55,8 +55,8 @@
   "devDependencies": {
     "@commitlint/cli": "^17.4.2",
     "@commitlint/config-conventional": "^17.4.2",
-    "@parcel/packager-ts": "^2.8.3",
-    "@parcel/transformer-typescript-types": "^2.8.3",
+    "@parcel/packager-ts": "^2.16.4",
+    "@parcel/transformer-typescript-types": "^2.16.4",
     "@types/events": "^3.0.0",
     "@types/node": "^17.0.33",
     "@typescript-eslint/eslint-plugin": "^5.51.0",
@@ -65,17 +65,18 @@
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-prettier": "^4.2.1",
     "husky": "^8.0.3",
-    "parcel": "^2.8.3",
+    "parcel": "^2.16.4",
     "prettier": "2.8.4",
+    "serve": "^14.2.6",
     "typescript": "^4.6.3"
   },
   "overrides": {
+    "compression": "^1.8.2",
     "minimatch": "^3.1.5"
   },
   "dependencies": {
     "@eyevinn/csai-manager": "^0.1.2",
     "@eyevinn/whpp-client": "^0.1.2",
-    "events": "^3.3.0",
-    "serve": "^14.2.6"
+    "events": "^3.3.0"
   }
 }
